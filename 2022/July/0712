@@ -1,0 +1,22 @@
+백준코딩 JAVA
+<Step6-1> 
+1) 문자열 -> 문자 / 아스키코드 출력
+import java.io.*;
+public class no1 {
+	public static void main(String[]args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		char a = br.readLine().charAt(0); //문자열->문자
+		int num = (int)a;
+		bw.write(num);		       //A
+		System.out.println(num); //65
+		bw.close();
+	}
+}
+
+<Step6-2>
+1) 문자열 -> 문자 -> 정수
+String st = 1;
+sum += Character.getNumericValue(st.charAt(0));
+		
+
