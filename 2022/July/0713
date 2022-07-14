@@ -1,0 +1,69 @@
+공공데이터 분석 - 자전거 수요 예측 
+
+import os
+- os 모듈을 불러오는 것
+ 
+from os import*
+- os모듈로부터 모두(*) import
+
+from os import listdir
+- 하나의 함수만 가져오는 것도 가능. 
+
+import만 사용하면 모듈 안의 함수를 사용할 때, 모듈명.함수명( )으로 하고, from을 사용하면 바로 함수명( )으로 사용
+
+import pandas as pd #데이터 분석 시 사용할 패키지
+Pandas Dataframe: 테이블 형식의 데이터 (tabular, rectangular grid 등으로 불림)를 다룰 때 사용
+
+import numpy as np
+
+csv 모듈은 CSV 형식의 표 형식 데이터를 읽고 쓰는 클래스를 구현
+엑셀이 선호하는 형식으로 데이터를 쓰거나 엑셀에서 생성된 파일의 데이터를 읽을 수 있다. 
+딕셔너리: 대응 관계를 나타내는 자료형 (다른 언어의 연관 배열, 해시에 해당), key와 value를 한 쌍으로 가짐 / 리스트, 튜플과 달리 순차적(sequential)이지 않음. 
+<bike.ipynb>
+from google.colab import drive #구글 드라이브 연결 , 현재 파일 위치 불러옴
+drive.mount("/content/drive")
+
+pp = "/content/drive/MyDrive/bike" #bike폴더 안에 3개의 파일이 있어 각각에 접근하기 쉽도록 bike까지의 주소 지정
+
+train = pd.read_csv(pp + '/train.csv')  #학습 데이터 불러오기 (표 형식)
+train
+
+test = pd.read_csv(pp + '/test.csv')
+test
+
+sample = pd.read_csv(pp + '/sampleSubmission.csv')
+sample
+DataFrame.drop(labels=값, axis=0. Columns=값, level=값, inplace=False, errors=’raise’)
+labels :제거할 컬럼명  or 인덱스
+axis: 0->로우 드롭(이상치 제거), 1->컬럼 드롭(삭제)
+inplace: 원본 데이터에 바로 적용(True) or 원본데이터 유지(False) 정함
+import matplotlib.pyplot as plt  # 그림으로 나타냄 (박스플롯, 그래프 등)
+train.plot(kind = 'box', subplots = True, layout=(3,3), figsize=(10,10)) 
+#박스플롯으로 데이터 분포 확인, data frame(train)은 plot()을 내장하기 때문에 plt.로 접근하지 않고 사용 가능 
+#subplots = True : 각 열들을 별개의 서브차트로 플로팅할지 여부, 2개 이상의 plotting(두개 이상의 박스 그래프)
+#layout : 튜플로 입력하는 subplot의 배열(서브플롯을 3*3으로 정렬해 나타냄)
+#figsize : 출력할 fig(그림)의 크기 (그래프의 크기)
+
+train_list = ['season', 'holiday', 'workingday', 'weather', 'temp', 'atemp','humidity', 'windspeed', 'count']
+#train의 컬럼 이름 리스트를 담는 변수
+from sklearn.model_selection import train_test_split
+#train_test_split()->train set와 test set로 분할 
+
+x_train, x_test, y_train, y_test = train_test_split(train[train_list],train['count'],random_state=42,test_size=0.1)
+#x_train으로 학습, x_test로 테스트, y_train으로 학습 결과 확인, y_test로 테스트 결과 확인 
+#train_list로 학습, count로 테스트,random_state에 난수 대입 -> 호출시마다 동일한 데이터 세트 생성(없으면 매번 다른 세트 생성, 대입하는 수는 큰 상관 x), 9:1로 학습 및 테스트(test_size = 0.1)
+
+from xgboost import XGBRegressor
+#앙상블: 여러 우수한 학습 모델을 조합해 예측력을 향상시키는 모델
+#부스팅 알고리즘: 잘못 분류된 객체들에 집중하여 새로운 분류 규칙을 생성하는 단계를 반복하는 알고리즘 (순차적 학습), 약한 예측모형 결합해 강한 예측모형 도출
+#XGboost 알고리즘: 여러 개의 결정트리 임의적으로 학습하는 앙상블의 부스팅 유형 알고리즘
+
+model = XGBRegressor().fit(x_train, y_train)
+XGBRegressor로 
+#XGBRegressor이용해 훈련(fit)
+pred = model.predict(x_test)
+#model에 x_test넣어 예측(테스트)
+
+from sklearn.model_selection import cross_val_score
+cross_val_score(model, x_train, y_train)
+#cross_val_score: 교차검증
