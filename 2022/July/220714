@@ -17,4 +17,4 @@ int a = Integer.parseInt(br.readLine());
 
 import java.util.Scanner;
 Scanner sc = new Scanner(System.in);
-int a = sc.nextInt();
+int a = sc.nextInt();  
